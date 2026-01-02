@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import toast, { Toaster } from "react-hot-toast";
@@ -31,12 +31,15 @@ export default function App() {
 
   const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
-    setPage(1); // 🔥 ВАЖЛИВО
+    setPage(1);
   };
 
-  if (isSuccess && movies.length === 0) {
-    toast.error("No movies found 😢");
-  }
+
+  useEffect(() => {
+    if (isSuccess && movies.length === 0) {
+      toast.error("No movies found 😢");
+    }
+  }, [isSuccess, movies.length]);
 
   return (
     <div className={css.app}>
@@ -59,6 +62,7 @@ export default function App() {
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
+
       {movies.length > 0 && (
         <MovieGrid movies={movies} onSelect={setSelectedMovie} />
       )}
